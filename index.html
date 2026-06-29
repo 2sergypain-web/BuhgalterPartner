@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тарифы — ПАРТНЁРЫ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        /* Фоновое видео — без placeholder! */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 10, 10, 0.75) 0%,
+                rgba(10, 10, 10, 0.65) 100%
+            );
+            z-index: -1;
+        }
+
+        /* Шапка */
+        header {
+            padding: 30px 60px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #c9b99a, #a89070);
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #c9b99a;
+        }
+
+        .logo-subtitle {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(201, 185, 154, 0.6);
+            text-transform: uppercase;
+        }
+
+        /* Заголовок страницы */
+        .page-header {
+            text-align: center;
+            padding: 40px 20px 60px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .page-header h1 span {
+            color: #c9b99a;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Сетка тарифов */
+        .tariffs-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+        }
+
+        .tariffs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .tariff-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 35px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .tariff-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #c9b99a, #a89070);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tariff-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(201, 185, 154, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .tariff-card:hover::before {
+            opacity: 1;
+        }
+
+        .tariff-card.featured {
+            border-color: rgba(201, 185, 154, 0.5);
+            background: rgba(201, 185, 154, 0.1);
+        }
+
+        .tariff-card.featured::before {
+            opacity: 1;
+        }
+
+        .tariff-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #c9b99a, #a89070);
+            color: #0a0a0a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .tariff-tag {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #c9b99a;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .tariff-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .tariff-subtitle {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .tariff-for {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tariff-for strong {
+            color: rgba(255, 255, 255, 0.9);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .tariff-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .tariff-features li {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .tariff-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #c9b99a;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .tariff-price-block {
+            margin-bottom: 25px;
+        }
+
+        .tariff-price {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .tariff-price .from {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .tariff-price .amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #c9b99a;
+        }
+
+        .tariff-price .currency {
+            font-size: 20px;
+            color: #c9b99a;
+        }
+
+        .tariff-price-note {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .tariff-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #c9b99a, #a89070);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .tariff-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(201, 185, 154, 0.3);
+        }
+
+        .tariff-btn.outline {
+            background: transparent;
+            border: 1px solid rgba(201, 185, 154, 0.4);
+            color: #c9b99a;
+        }
+
+        .tariff-btn.outline:hover {
+            background: rgba(201, 185, 154, 0.1);
+            box-shadow: none;
+        }
+
+        /* Таблица цен */
+        .pricing-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title span {
+            color: #c9b99a;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .pricing-table th {
+            background: rgba(201, 185, 154, 0.15);
+            padding: 20px;
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #c9b99a;
+            font-weight: 600;
+        }
+
+        .pricing-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pricing-table .price-cell {
+            color: #c9b99a;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Превышение лимитов */
+        .limits-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .limits-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 35px;
+        }
+
+        .limits-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #c9b99a;
+            text-align: center;
+        }
+
+        .limits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .limit-item {
+            text-align: center;
+            padding: 25px 20px;
+            background: rgba(201, 185, 154, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(201, 185, 154, 0.15);
+        }
+
+        .limit-item .value {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .limit-item .price {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #c9b99a;
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        footer p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Адаптив */
+        @media (max-width: 968px) {
+            header {
+                padding: 20px 25px;
+            }
+
+            .tariffs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .limits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-table {
+                font-size: 13px;
+            }
+
+            .pricing-table th,
+            .pricing-table td {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Фоновое видео (без placeholder!) -->
+    <video class="video-bg" autoplay muted loop playsinline poster="">
+        <source src="background-video.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <!-- Шапка -->
+    <header>
+        <div class="logo-icon"></div>
+        <div>
+            <div class="logo-text">ПАРТНЁРЫ</div>
+            <div class="logo-subtitle">Информационный ресурс компании</div>
+        </div>
+    </header>
+
+    <!-- Заголовок страницы -->
+    <div class="page-header">
+        <h1>Тарифы на <span>бухгалтерское<br>сопровождение</span></h1>
+        <p>Выберите оптимальный пакет услуг для вашего бизнеса</p>
+    </div>
+
+    <!-- Сетка тарифов -->
+    <div class="tariffs-container">
+        <div class="tariffs-grid">
+
+            <!-- Тариф 1: Базовый -->
+            <div class="tariff-card">
+                <div class="tariff-tag">Тариф</div>
+                <div class="tariff-name">Базовый — Старт</div>
+                <div class="tariff-subtitle">Для микробизнеса</div>
+                <div class="tariff-for">
+                    <strong>Для кого:</strong>
+                    ИП без сотрудников или с 1 физлицом, микробизнес на УСН
+                </div>
+                <ul class="tariff-features">
+                    <li>Первичные документы до 10 шт./мес.</li>
+                    <li>Платежи до 5 шт./мес.</li>
+                    <li>Расчёт налогов и взносов</li>
+                    <li>Сдача отчётности</li>
+                </ul>
+                <div class="tariff-price-block">
+                    <div class="tariff-price">
+                        <span class="from">от</span>
+                        <span class="amount">5 000</span>
+                        <span class="currency">₽/мес</span>
+                    </div>
+                    <div class="tariff-price-note">УСН «Доходы» 6%</div>
+                </div>
+                <a href="#" class="tariff-btn outline">Выбрать тариф</a>
+            </div>
+
+            <!-- Тариф 2: Стандартный -->
+            <div class="tariff-card">
+                <div class="tariff-tag">Тариф</div>
+                <div class="tariff-name">Стандартный — Оптимум</div>
+                <div class="tariff-subtitle">Для малого бизнеса</div>
+                <div class="tariff-for">
+                    <strong>Для кого:</strong>
+                    ООО или ИП с небольшим штатом и регулярными контрагентами (до 5 человек)
+                </div>
+                <ul class="tariff-features">
+                    <li>Первичные документы до 40 шт./мес.</li>
+                    <li>Платежи до 20 шт./мес.</li>
+                    <li>Полный расчёт налогов и платежей</li>
+                    <li>Сдача всей отчётности (РСВ, 6-НДФЛ)</li>
+                    <li>Обработка банковских выписок</li>
+                    <li>Зарплатные документы</li>
+                </ul>
+                <div class="tariff-price-block">
+                    <div class="tariff-price">
+                        <span class="from">от</span>
+                        <span class="amount">8 000</span>
+                        <span class="currency">₽/мес</span>
+                    </div>
+                    <div class="tariff-price-note">УСН «Доходы» 6%</div>
+                </div>
+                <a href="#" class="tariff-btn outline">Выбрать тариф</a>
+            </div>
+
+            <!-- Тариф 3: Медиум (популярный) -->
+            <div class="tariff-card featured">
+                <div class="tariff-badge">Популярный</div>
+                <div class="tariff-tag">Тариф</div>
+                <div class="tariff-name">Медиум — Профи</div>
+                <div class="tariff-subtitle">Для развивающегося бизнеса</div>
+                <div class="tariff-for">
+                    <strong>Для кого:</strong>
+                    Активно развивающийся бизнес, штат до 15 человек
+                </div>
+                <ul class="tariff-features">
+                    <li>Всё из тарифа «Стандартный»</li>
+                    <li>Оформление счетов, актов, накладных</li>
+                    <li>Полное банковское сопровождение</li>
+                    <li>Сверка с контрагентами</li>
+                    <li>Закрывающие документы за период</li>
+                    <li>До 100 документов и 50 платежей/мес.</li>
+                </ul>
+                <div class="tariff-price-block">
+                    <div class="tariff-price">
+                        <span class="from">от</span>
+                        <span class="amount">12 000</span>
+                        <span class="currency">₽/мес</span>
+                    </div>
+                    <div class="tariff-price-note">УСН «Доходы» 6%</div>
+                </div>
+                <a href="#" class="tariff-btn">Выбрать тариф</a>
+            </div>
+
+            <!-- Тариф 4: Премиум -->
+            <div class="tariff-card">
+                <div class="tariff-tag">Тариф</div>
+                <div class="tariff-name">Премиум — Бизнес-контроль</div>
+                <div class="tariff-subtitle">Для крупных компаний</div>
+                <div class="tariff-for">
+                    <strong>Для кого:</strong>
+                    Компании со сложной структурой, ВЭД, штат от 15 человек
+                </div>
+                <ul class="tariff-features">
+                    <li>Всё из тарифа «Медиум»</li>
+                    <li>Полный кадровый учёт</li>
+                    <li>Налоговое планирование</li>
+                    <li>Управленческая отчётность</li>
+                    <li>Расширенные консультации</li>
+                    <li>Безлимит документов и платежей</li>
+                </ul>
+                <div class="tariff-price-block">
+                    <div class="tariff-price">
+                        <span class="from">от</span>
+                        <span class="amount">22 000</span>
+                        <span class="currency">₽/мес</span>
+                    </div>
+                    <div class="tariff-price-note">УСН «Доходы» 6%</div>
+                </div>
+                <a href="#" class="tariff-btn outline">Выбрать тариф</a>
+            </div>
+
+        </div>
+
+        <!-- Таблица цен -->
+        <div class="pricing-section">
+            <h2 class="section-title">Полная <span>сетка цен</span></h2>
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Система налогообложения</th>
+                        <th>Базовый</th>
+                        <th>Стандартный</th>
+                        <th>Медиум</th>
+                        <th>Премиум</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>УСН «Доходы» 6%</td>
+                        <td class="price-cell">5 000 ₽</td>
+                        <td class="price-cell">8 000 ₽</td>
+                        <td class="price-cell">12 000 ₽</td>
+                        <td class="price-cell">22 000 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>УСН «Доходы-Расходы» 15%</td>
+                        <td class="price-cell">6 000 ₽</td>
+                        <td class="price-cell">10 000 ₽</td>
+                        <td class="price-cell">15 000 ₽</td>
+                        <td class="price-cell">32 000 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>ОСНО</td>
+                        <td class="price-cell">8 000 ₽</td>
+                        <td class="price-cell">12 000 ₽</td>
+                        <td class="price-cell">20 000 ₽</td>
+                        <td class="price-cell">45 000 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>ОСНО / УСН (ВЭД)</td>
+                        <td class="price-cell">—</td>
+                        <td class="price-cell">15 000 ₽</td>
+                        <td class="price-cell">25 000 ₽</td>
+                        <td class="price-cell">65 000 ₽</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Превышение лимитов -->
+        <div class="limits-section">
+            <div class="limits-card">
+                <h3>Превышение лимитов</h3>
+                <div class="limits-grid">
+                    <div class="limit-item">
+                        <div class="value">1 документ<br>сверх лимита</div>
+                        <div class="price">500 ₽</div>
+                    </div>
+                    <div class="limit-item">
+                        <div class="value">1 сотрудник<br>сверх лимита</div>
+                        <div class="price">3 000 ₽</div>
+                    </div>
+                    <div class="limit-item">
+                        <div class="value">1 платёжное<br>поручение</div>
+                        <div class="price">1 000 ₽</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <p>© 2026 ПАРТНЁРЫ. Все права защищены.</p>
+    </footer>
+
+</body>
+</html>
